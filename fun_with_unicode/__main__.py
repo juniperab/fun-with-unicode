@@ -1,4 +1,5 @@
 import argparse
+import pyperclip
 import sys
 from . import converters
 
@@ -31,10 +32,13 @@ def parse_args(argv):
     
 def do_to_codes(input):
     def do_conversion(input_str):
-        return "--> %s <--" % ' '.join(f'{i:x}' for i in converters.string_to_codes(input_str.strip()))
+        result = ' '.join(f'{i:x}' for i in converters.string_to_codes(input_str.strip()))
+        pyperclip.copy(result)
+        return "\t%s" % result
     if input is not None:
         print(do_conversion(input))
         sys.exit(0)
+    print("Type in characters; press 'enter' to convert. Input a blank line to exit.")
     for line in sys.stdin:
         if len(line.strip()) == 0:
             sys.exit(0)
@@ -44,10 +48,13 @@ def do_to_codes(input):
 def do_to_string(input):
     def do_conversion(input_str):
         codes = [int(s, 16) for s in input_str.split()]
-        return "--> %s <--" % converters.codes_to_string(codes)
+        result = converters.codes_to_string(codes)
+        pyperclip.copy(result)
+        return "\t%s" % result
     if input is not None:
         print(do_conversion(input))
         sys.exit(0)
+    print("Type in hex codes, separated by spaces; press 'enter' to convert. Input a blank line to exit.")
     for line in sys.stdin:
         if len(line.strip()) == 0:
             sys.exit(0)
